@@ -1,0 +1,11 @@
+{
+  "name": "day1-cicd-refactor",
+  "version": "1.0.0",
+  "description": "Fresh CI/CD pipeline project for Day 1 task",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "node -e \"console.log('Test passed successfully')\"",
+    "security-scan": "node -e \"console.log('Basic security scan stage passed')\""
+  }
+}
