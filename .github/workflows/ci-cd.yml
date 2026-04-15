@@ -63,14 +63,31 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run Basic Security Check
+      - name: Check for committed .env file
         run: |
-          echo "Checking for hardcoded .env files"
           if [ -f .env ]; then
-            echo ".env file found - fail"
+            echo ".env file found - failing workflow"
             exit 1
           fi
-          echo "Basic security scan passed"
+          echo "No .env file committed"
+
+      - name: Verify secret availability securely
+        env:
+          APP_SECRET: ${{ secrets.APP_SECRET }}
+        run: |
+          if [ -z "$APP_SECRET" ]; then
+            echo "APP_SECRET is missing"
+            exit 1
+          fi
+          echo "APP_SECRET is configured securely"
+
+      - name: Check for hardcoded secret pattern
+        run: |
+          if grep -R "day2-demo-secret-123" .; then
+            echo "Hardcoded secret found in repository"
+            exit 1
+          fi
+          echo "No hardcoded demo secret found"
 
   deploy:
     name: Deploy Stage
@@ -82,4 +99,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Simulated Deploy
-        run: echo "Deploying $APP_NAME from main branch only"
+        env:
+          APP_SECRET: ${{ secrets.APP_SECRET }}
+        run: |
+          echo "Deploying $APP_NAME from main branch only"
+          echo "Secret is being used securely without printing it"
