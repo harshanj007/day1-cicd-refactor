@@ -55,6 +55,9 @@ jobs:
       - name: Run Tests
         run: npm test
 
+      - name: Force failure
+        run: exit 1
+
   security-scan:
     name: Security Scan Stage
     runs-on: ubuntu-latest
